@@ -26,9 +26,8 @@ Parser::Parser (string input) {
         } else if ( (input[i] >= 48 && input[i] <= 57) || 
                     (input[i] >= 65 && input[i] <= 90) || 
                     (input[i] >= 97 && input[i] <= 122)) {
-
             if (input[i] >= 48 && input[i] <= 57) {
-                cout << "Variabele mag niet met getal beginnen, syntax error" << endl;
+                cout << "Syntax error: variabele mag niet met getal beginnen" << endl;
             } else {
                 variabele = input[i];
                 i++;
@@ -37,9 +36,8 @@ Parser::Parser (string input) {
                     variabele = variabele + input[i];
                     i++;
                 }
+                i--;
             }
-            
-            
             tokens.push_back(make_pair(var, variabele));
         } else if (input[i] == 32) {
             variabele = " ";
@@ -68,6 +66,9 @@ void Parser::expr () {
 // expr' functie
 void Parser::exprap () {
     //cout << "exprap" << endl;
+    if (index+1 == tokens.size()) {
+        return;
+    }
     if ((index+1 < tokens.size() && tokens[index].second != ")") 
         || (index+1 == tokens.size() && tokens[index].first == Tokenizer::var)) {
         lexpr();
@@ -83,9 +84,15 @@ void Parser::lexpr () {
     if (tokens[index].second == "\\") {
         cout << tokens[index].second; // lambda
         index++;
+        /* if (tokens[index].first == Tokenizer::space) {
+            index++;
+        } */
         if (tokens[index].first == Tokenizer::var) {
             cout << tokens[index].second; // var
             index++;
+            /* if (tokens[index].first == Tokenizer::space) {
+                index++;
+            } */
         } else {
             // verkeerde input
         }
@@ -101,16 +108,25 @@ void Parser::pexpr () {
     if (tokens[index].second == "(") {
         cout << tokens[index].second;
         index++;
+        /* if (tokens[index].first == Tokenizer::space) {
+            index++;
+        } */
         expr();
         if (tokens[index].second == ")")  {
             cout << tokens[index].second;
             index++;
+            /* if (tokens[index].first == Tokenizer::space) {
+                index++;
+            } */
         } else {
             // onjuist
         }
     } else if (tokens[index].first == Tokenizer::var) {
         cout << tokens[index].second; // var
         index++;
+       /*  if (tokens[index].first == Tokenizer::space) {
+            index++;
+        } */
         return;
     }
 } // pexpr
