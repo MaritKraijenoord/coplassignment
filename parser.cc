@@ -29,6 +29,7 @@ Parser::Parser (string input) {
                     (input[i] >= 97 && input[i] <= 122)) {
             if (input[i] >= 48 && input[i] <= 57) {
                 cout << "Syntax error: variabele mag niet met getal beginnen" << endl;
+                exit(1);
             } else {
                 variabele = input[i];
                 i++;
@@ -45,7 +46,7 @@ Parser::Parser (string input) {
             tokens.push_back(make_pair(space, variabele));
         } else {
             cout << "Syntax error: karakter niet herkend" << endl;
-            //return 1;
+            exit(1);
         }
     }
     index = 0;
@@ -61,9 +62,6 @@ Parser::Parser (string input) {
 // expr functie
 void Parser::expr () {
     //cout << "expr" << endl;
-    if (resultaat == "Syntax error: onjuiste volgorde") {
-        return;
-    }
     lexpr();
     exprap();
 } // expr
@@ -71,9 +69,6 @@ void Parser::expr () {
 // expr' functie
 void Parser::exprap () {
     //cout << "exprap" << endl;
-    if (resultaat == "Syntax error: onjuiste volgorde") {
-        return;
-    }
     if (index == tokens.size()) {
         return;
     }
@@ -89,9 +84,6 @@ void Parser::exprap () {
 // lexpr functie
 void Parser::lexpr () {
     //cout << "lexpr" << endl;
-    if (resultaat == "Syntax error: onjuiste volgorde") {
-        return;
-    }
     if (tokens[index].second == "\\") {
         //cout << tokens[index].second; // lambda
         resultaat = resultaat + tokens[index].second;
@@ -107,8 +99,8 @@ void Parser::lexpr () {
                 index++;
             }
         } else {
-            resultaat = "Syntax error: onjuiste volgorde";
-            return;
+            cout << "Syntax error: missing variable" << endl;
+            exit(1);
         }
         lexpr();
     } else if (index < tokens.size()){
@@ -119,9 +111,6 @@ void Parser::lexpr () {
 // pexpr functie
 void Parser::pexpr () {
     //cout << "pexpr" << endl;
-    if (resultaat == "Syntax error: onjuiste volgorde") {
-        return;
-    }
     if (tokens[index].second == "(" && tokens[index-1].second != ")") {
         //cout << tokens[index].second;
         resultaat = resultaat + tokens[index].second;
@@ -138,12 +127,12 @@ void Parser::pexpr () {
                 index++;
             }
         } else {
-            resultaat = "Syntax error: onjuiste volgorde";
-            return;
+            cout << "Syntax error: missing closing parenthesis" << endl;
+            exit(1);
         }
     } else if (tokens[index].second == "(" && tokens[index-1].second == ")" ) {
-        resultaat = "Syntax error: onjuiste volgorde";
-        return;
+        cout << "Syntax error: missing variable" << endl;
+        exit(1);
     } else if (tokens[index].first == Tokenizer::var) {
         //cout << tokens[index].second; // var
         resultaat = resultaat + tokens[index].second;
