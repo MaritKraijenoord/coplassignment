@@ -2,7 +2,7 @@
 // Assignment 1
 // Marit Kraijenoord, s3180131
 // Jasmijn Makop, s3688321
-// DATE
+// 27/09/2023
 
 #include <iostream>
 #include <vector>
