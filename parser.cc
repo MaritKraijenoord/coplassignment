@@ -40,7 +40,6 @@ Parser::Parser (string input) {
                 i--;
             }
             tokens.push_back(make_pair(var, variabele));
-    cout << "hoi";
         } else if (input[i] == 32) {
             variabele = " ";
             tokens.push_back(make_pair(space, variabele));
@@ -56,11 +55,15 @@ Parser::Parser (string input) {
     }
     cout << endl;
     expr();
+    cout << resultaat << endl;
 }
 
 // expr functie
 void Parser::expr () {
     //cout << "expr" << endl;
+    if (resultaat == "Syntax error: onjuiste volgorde") {
+        return;
+    }
     lexpr();
     exprap();
 } // expr
@@ -68,6 +71,9 @@ void Parser::expr () {
 // expr' functie
 void Parser::exprap () {
     //cout << "exprap" << endl;
+    if (resultaat == "Syntax error: onjuiste volgorde") {
+        return;
+    }
     if (index == tokens.size()) {
         return;
     }
@@ -83,20 +89,26 @@ void Parser::exprap () {
 // lexpr functie
 void Parser::lexpr () {
     //cout << "lexpr" << endl;
+    if (resultaat == "Syntax error: onjuiste volgorde") {
+        return;
+    }
     if (tokens[index].second == "\\") {
-        cout << tokens[index].second; // lambda
+        //cout << tokens[index].second; // lambda
+        resultaat = resultaat + tokens[index].second;
         index++;
         if (tokens[index].first == Tokenizer::space) {
             index++;
         }
         if (tokens[index].first == Tokenizer::var) {
-            cout << tokens[index].second; // var
+            //cout << tokens[index].second; // var
+            resultaat = resultaat + tokens[index].second;
             index++;
             if (tokens[index].first == Tokenizer::space) {
                 index++;
             }
         } else {
-            // verkeerde input
+            resultaat = "Syntax error: onjuiste volgorde";
+            return;
         }
         lexpr();
     } else if (index < tokens.size()){
@@ -107,24 +119,34 @@ void Parser::lexpr () {
 // pexpr functie
 void Parser::pexpr () {
     //cout << "pexpr" << endl;
-    if (tokens[index].second == "(") {
-        cout << tokens[index].second;
+    if (resultaat == "Syntax error: onjuiste volgorde") {
+        return;
+    }
+    if (tokens[index].second == "(" && tokens[index-1].second != ")") {
+        //cout << tokens[index].second;
+        resultaat = resultaat + tokens[index].second;
         index++;
         if (tokens[index].first == Tokenizer::space) {
             index++;
         }
         expr();
         if (tokens[index].second == ")")  {
-            cout << tokens[index].second;
+            //cout << tokens[index].second;
+            resultaat = resultaat + tokens[index].second;
             index++;
             if (tokens[index].first == Tokenizer::space) {
                 index++;
             }
         } else {
-            // onjuist
+            resultaat = "Syntax error: onjuiste volgorde";
+            return;
         }
+    } else if (tokens[index].second == "(" && tokens[index-1].second == ")" ) {
+        resultaat = "Syntax error: onjuiste volgorde";
+        return;
     } else if (tokens[index].first == Tokenizer::var) {
-        cout << tokens[index].second; // var
+        //cout << tokens[index].second; // var
+        resultaat = resultaat + tokens[index].second;
         index++;
         if (tokens[index].first == Tokenizer::space) {
             index++;
