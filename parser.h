@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <string>
 using namespace std;
 
 class Parser {
@@ -21,8 +22,9 @@ class Parser {
         void pexpr ();
 
     private:
-        vector<pair<int,char>> tokens;
+        vector<pair<int,string>> tokens;
         size_t index;
+        string result;
 
 };
 
