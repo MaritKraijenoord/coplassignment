@@ -66,7 +66,7 @@ void Parser::expr () {
 // expr' functie
 void Parser::exprap () {
     //cout << "exprap" << endl;
-    if (index+1 == tokens.size()) {
+    if (index == tokens.size()) {
         return;
     }
     if ((index+1 < tokens.size() && tokens[index].second != ")") 
@@ -84,15 +84,15 @@ void Parser::lexpr () {
     if (tokens[index].second == "\\") {
         cout << tokens[index].second; // lambda
         index++;
-        /* if (tokens[index].first == Tokenizer::space) {
+        if (tokens[index].first == Tokenizer::space) {
             index++;
-        } */
+        }
         if (tokens[index].first == Tokenizer::var) {
             cout << tokens[index].second; // var
             index++;
-            /* if (tokens[index].first == Tokenizer::space) {
+            if (tokens[index].first == Tokenizer::space) {
                 index++;
-            } */
+            }
         } else {
             // verkeerde input
         }
@@ -108,25 +108,25 @@ void Parser::pexpr () {
     if (tokens[index].second == "(") {
         cout << tokens[index].second;
         index++;
-        /* if (tokens[index].first == Tokenizer::space) {
+        if (tokens[index].first == Tokenizer::space) {
             index++;
-        } */
+        }
         expr();
         if (tokens[index].second == ")")  {
             cout << tokens[index].second;
             index++;
-            /* if (tokens[index].first == Tokenizer::space) {
+            if (tokens[index].first == Tokenizer::space) {
                 index++;
-            } */
+            }
         } else {
             // onjuist
         }
     } else if (tokens[index].first == Tokenizer::var) {
         cout << tokens[index].second; // var
         index++;
-       /*  if (tokens[index].first == Tokenizer::space) {
+        if (tokens[index].first == Tokenizer::space) {
             index++;
-        } */
+        }
         return;
     }
 } // pexpr
