@@ -13,6 +13,7 @@ enum Tokenizer {
 // constructor parser
 Parser::Parser (string input) {
     string variabele = "";
+    resultaat = "";
     for (size_t i = 0; i < input.size(); i++) {
         if (input[i] == '\\') {
             variabele = "\\";
@@ -39,6 +40,7 @@ Parser::Parser (string input) {
                 i--;
             }
             tokens.push_back(make_pair(var, variabele));
+    cout << "hoi";
         } else if (input[i] == 32) {
             variabele = " ";
             tokens.push_back(make_pair(space, variabele));

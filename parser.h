@@ -23,8 +23,8 @@ class Parser {
 
     private:
         vector<pair<int,string>> tokens;
+        string resultaat;
         size_t index;
-        //string resultaat;
 
 };
 

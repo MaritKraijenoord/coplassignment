@@ -11,7 +11,6 @@ using namespace std;
 
 int main () {
     string input;
-    vector<pair<int,char>> tokens;
     cout << "Geef de input string" << endl;
     getline(cin, input);
     Parser* P1 = new Parser(input);
