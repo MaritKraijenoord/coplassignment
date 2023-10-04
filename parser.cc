@@ -13,6 +13,7 @@ enum Tokenizer {
 // constructor parser
 Parser::Parser (string input) {
     string variabele = "";
+    string opnieuwParsen;
     resultaat = "";
     for (size_t i = 0; i < input.size(); i++) {
         if (input[i] == '\\') {
@@ -27,7 +28,8 @@ Parser::Parser (string input) {
         } else if ( (input[i] >= 48 && input[i] <= 57) || 
                     (input[i] >= 65 && input[i] <= 90) || 
                     (input[i] >= 97 && input[i] <= 122)) {
-            if (input[i] >= 48 && input[i] <= 57) {
+            if (input[i] >= 48 && input[i] <= 57 && 
+                (input[i-1] == ' ' || input[i-1] == ')' ||input[i-1] == '(')) {
                 cout << "Syntax error: variabele mag niet met getal beginnen" << endl;
                 exit(1);
             } else {
@@ -57,6 +59,13 @@ Parser::Parser (string input) {
     cout << endl;
     expr();
     cout << resultaat << endl;
+    cout << "Wil u het resultaat opnieuw parsen? (j/n)" << endl;
+    cin >> opnieuwParsen;
+    if (opnieuwParsen == "J" || opnieuwParsen == "j") {
+        Parser* P2 = new Parser(resultaat);
+    } else {
+        cout << "Er wordt niet opnieuw geparsed." << endl;
+    }
 }
 
 // expr functie
@@ -89,6 +98,7 @@ void Parser::lexpr () {
         resultaat = resultaat + tokens[index].second;
         index++;
         if (tokens[index].first == Tokenizer::space) {
+            resultaat = resultaat + tokens[index].second;
             index++;
         }
         if (tokens[index].first == Tokenizer::var) {
@@ -96,6 +106,7 @@ void Parser::lexpr () {
             resultaat = resultaat + tokens[index].second;
             index++;
             if (tokens[index].first == Tokenizer::space) {
+                resultaat = resultaat + tokens[index].second;
                 index++;
             }
         } else {
@@ -116,6 +127,7 @@ void Parser::pexpr () {
         resultaat = resultaat + tokens[index].second;
         index++;
         if (tokens[index].first == Tokenizer::space) {
+            resultaat = resultaat + tokens[index].second;
             index++;
         }
         expr();
@@ -124,6 +136,7 @@ void Parser::pexpr () {
             resultaat = resultaat + tokens[index].second;
             index++;
             if (tokens[index].first == Tokenizer::space) {
+                resultaat = resultaat + tokens[index].second;
                 index++;
             }
         } else {
@@ -138,6 +151,7 @@ void Parser::pexpr () {
         resultaat = resultaat + tokens[index].second;
         index++;
         if (tokens[index].first == Tokenizer::space) {
+            resultaat = resultaat + tokens[index].second;
             index++;
         }
         return;
