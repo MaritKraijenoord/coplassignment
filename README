@@ -1,4 +1,9 @@
 This repository contains the files that make up the assignment(s) for concepts of programming languages.
+The standard format is as follows: there is one main.cc file which contains the main code. 
+Classes and their implementations are split into separate .h/.cc files which contain the class declaration (.h) and its implementation (.cc)
+Variables are named using lowercase letters in case of one-word variables and camel-case in case of multiple-word variables.
+During programming, multiple checkpoints are made to keep track of progress. At each checkpoint, the changes are committed.
+Each function in the program has a line with commentary in which is explained what that function does.
 The program works as intended
 There are no known deviations to the assignment
 The program works by first tokenizing the input, where the input is split up into variables, which are strings of letters and numbers that start with a number, 
