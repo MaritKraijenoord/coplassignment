@@ -14,5 +14,6 @@ int main () {
     cout << "Geef de input string" << endl;
     getline(cin, input);
     Parser* P1 = new Parser(input);
+    P1 = nullptr;
     return 0;
 }//main

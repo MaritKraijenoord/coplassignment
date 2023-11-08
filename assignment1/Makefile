@@ -1,24 +1,27 @@
+# Makefile for simple C++ program
 CC=gcc
 CXX=g++
 RM=rm -f
-CPPFLAGS=-g $(shell root-config --cflags)
-LDFLAGS=-g $(shell root-config --ldflags)
-LDLIBS=$(shell root-config --libs)
+CPPFLAGS=-g -Wall -Wextra -std=c++11
+LDFLAGS=-g 
+LDLIBS=
 SRCS=main.cc parser.cc
 OBJS=$(subst .cc,.o,$(SRCS))
-all: main
-main: $(OBJS)
-$(CXX) $(LDFLAGS) -o main $(OBJS) $(LDLIBS)
+
+all: tool
+tool: $(OBJS)
+	$(CXX) $(LDFLAGS) -o tool $(OBJS) $(LDLIBS)
 main.o: main.cc parser.h
-parser.o: parser.h parser.cc
+parser.o: parser.cc parser.h
+
 clean:
-$(RM) $(OBJS)
+	$(RM) $(OBJS)
 distclean: clean
-$(RM) main
-build: main
-echo finished
+	$(RM) tool
+build: tool
+	echo finished
 run: build
-./main positives.txt
+	./tool positives.txt
 # alternatively:
-# ./main < positives.txt
+# ./tool < positives.txt
 # if your program reads from the standard input (stdin)
