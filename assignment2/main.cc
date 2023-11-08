@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 #include "parser.h"
+#include "reduction.h"
 using namespace std;
 
 int main () {
