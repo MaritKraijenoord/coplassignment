@@ -7,12 +7,31 @@
 #include <iostream>
 using namespace std;
 
+class Node {
+    public:
+        string data;
+        Node* left;
+        Node* right;
+        
+    Node(const string& value) {
+        data = value;
+        left = nullptr;
+        right = nullptr;
+    }  
+};
+
 class Reduction {
     private:
-
+        string input; // input
     public:
-        // functie voor ast
+        Reduction(string input); // constructor
+
+        ~Reduction(); // destructor
+
+        Node* AST();
+
         // functie voor alfa reductie
+        
         // functie voor beta reductie
 };
 

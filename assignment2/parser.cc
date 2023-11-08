@@ -66,7 +66,7 @@ Parser::Parser (string input) {
     } else {
         cout << "Er wordt niet opnieuw geparsed." << endl;
     }
-}
+} // constructor
 
 // expr functie
 void Parser::expr () {
