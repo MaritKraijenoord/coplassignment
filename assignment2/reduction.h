@@ -5,30 +5,54 @@
 
 #include <fstream>
 #include <iostream>
+#include <vector>
+#include <string>
+#include <stack>
 using namespace std;
+
+struct Token {
+    enum {
+        variabele = 0, 
+        lambda = 1, 
+        openb = 2, 
+        closedb = 3,
+        space = 4
+    } type;
+    string var;
+};
 
 class Node {
     public:
         string data;
+        int type;
         Node* left;
         Node* right;
         
-    Node(const string& value) {
-        data = value;
-        left = nullptr;
-        right = nullptr;
-    }  
+        Node(const string& value, const int& token) {
+            data = value;
+            type = token;
+            left = nullptr;
+            right = nullptr;
+        };
+        // type 5 = apply
 };
 
 class Reduction {
     private:
         string input; // input
+        int index;
+        vector<Token> tokens;
+
     public:
-        Reduction(string input); // constructor
+        Reduction(); // constructor
 
         ~Reduction(); // destructor
 
-        Node* AST();
+        bool tokenizer(string input); // zet input in token vector
+
+        Node* AST(); // functie die abstract syntax tree maakt
+
+        void ASTtraversal(Node* root); // doorloopt abstract syntax tree (in-order traversal)
 
         // functie voor alfa reductie
         

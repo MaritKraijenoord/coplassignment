@@ -11,7 +11,7 @@ enum Tokenizer {
 };
 
 // constructor parser
-Parser::Parser (string input) {
+Parser::Parser (string& input) {
     string variabele = "";
     string opnieuwParsen;
     resultaat = "";
@@ -59,10 +59,13 @@ Parser::Parser (string input) {
     cout << endl;
     expr();
     cout << resultaat << endl;
+    input = resultaat;
     cout << "Wil u het resultaat opnieuw parsen? (j/n)" << endl;
-    cin >> opnieuwParsen;
+    //cin >> opnieuwParsen;
+    opnieuwParsen = "n";
     if (opnieuwParsen == "J" || opnieuwParsen == "j") {
-        Parser* P2 = new Parser(resultaat);
+        Parser* P2 = new Parser(input);
+        delete P2;
     } else {
         cout << "Er wordt niet opnieuw geparsed." << endl;
     }
@@ -70,14 +73,12 @@ Parser::Parser (string input) {
 
 // expr functie
 void Parser::expr () {
-    //cout << "expr" << endl;
     lexpr();
     exprap();
 } // expr
 
 // expr' functie
 void Parser::exprap () {
-    //cout << "exprap" << endl;
     if (index == tokens.size()) {
         return;
     }
@@ -92,9 +93,7 @@ void Parser::exprap () {
 
 // lexpr functie
 void Parser::lexpr () {
-    //cout << "lexpr" << endl;
     if (tokens[index].second == "\\") {
-        //cout << tokens[index].second; // lambda
         resultaat = resultaat + tokens[index].second;
         index++;
         if (tokens[index].first == Tokenizer::space) {
@@ -102,7 +101,6 @@ void Parser::lexpr () {
             index++;
         }
         if (tokens[index].first == Tokenizer::var) {
-            //cout << tokens[index].second; // var
             resultaat = resultaat + tokens[index].second;
             index++;
             if (tokens[index].first == Tokenizer::space) {
@@ -121,9 +119,7 @@ void Parser::lexpr () {
 
 // pexpr functie
 void Parser::pexpr () {
-    //cout << "pexpr" << endl;
     if (tokens[index].second == "(" && tokens[index-1].second != ")") {
-        //cout << tokens[index].second;
         resultaat = resultaat + tokens[index].second;
         index++;
         if (tokens[index].first == Tokenizer::space) {
@@ -132,7 +128,6 @@ void Parser::pexpr () {
         }
         expr();
         if (tokens[index].second == ")")  {
-            //cout << tokens[index].second;
             resultaat = resultaat + tokens[index].second;
             index++;
             if (tokens[index].first == Tokenizer::space) {
@@ -147,7 +142,6 @@ void Parser::pexpr () {
         cout << "Syntax error: missing variable" << endl;
         exit(1);
     } else if (tokens[index].first == Tokenizer::var) {
-        //cout << tokens[index].second; // var
         resultaat = resultaat + tokens[index].second;
         index++;
         if (tokens[index].first == Tokenizer::space) {
