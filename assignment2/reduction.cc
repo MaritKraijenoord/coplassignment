@@ -69,41 +69,52 @@ bool Reduction::tokenizer (string input) {
 // zet tokens in AST
 Node* Reduction::AST () {
     stack<Node*> nodeStack;
-    stack<Token> operatorStack;
-
-    for (const Token& token : tokens) {
-        if (token.type == Token::variabele) {
-            nodeStack.push(new Node(token.var, token.type));
-        } else if (token.type == Token::space) {
-            while (nodeStack.size() > 1) {
-                Node* right = nodeStack.top();
+    stack<Node*> operatorStack;
+    string data;
+    for (size_t i = 0; i < tokens.size(); i++) {
+        int type = tokens[i].type;
+        /* if (type == 4) {
+            data = "apply";
+        } else {
+            data = tokens[i].var;
+        } */ // delete
+        data = tokens[i].var;
+        Node* newNode = new Node(data, type);
+        cout << "node: " << newNode->data << " " << newNode->type << endl;
+        if (newNode->type == 0) { // variabele
+            nodeStack.push(newNode);
+        } else if (newNode->type == 2) { // open bracket (
+            operatorStack.push(newNode);
+        } else if (newNode->type == 3) { // closed bracket )
+            while (!operatorStack.empty() && operatorStack.top()->type != 2) {
+                Node* operatorNode = new Node(operatorStack.top()->data, operatorStack.top()->type);
+                operatorStack.pop(); // pop )
+                operatorNode->right = nodeStack.top();
                 nodeStack.pop();
-
-                Node* left = nodeStack.top();
-                nodeStack.pop();
-
-                Node* applyNode = new Node("apply", 5); // type 5 = apply
-                applyNode->left = left;
-                applyNode->right = right;
-
-                nodeStack.push(applyNode);
+                if (operatorNode->type != 1) {
+                    operatorNode->left = nodeStack.top();
+                    nodeStack.pop();
+                }
+                nodeStack.push(operatorNode);
             }
-        } else if (token.type == Token::lambda) {
-            while (nodeStack.size() > 1) {
-                Node* right = nodeStack.top();
-                nodeStack.pop();
-
-                Node* left = nodeStack.top();
-                nodeStack.pop();
-
-                Node* applyNode = new Node("lambda", 1);
-                applyNode->left = left;
-                applyNode->right = right;
-
-                nodeStack.push(applyNode);
-            }
+            operatorStack.pop(); // pop (
+        } else if (newNode->type == 1 || newNode->type == 4) { // lambda en space
+            operatorStack.push(newNode);
         }
     }
+    while (!operatorStack.empty()) {
+        Node* operatorNode = new Node(operatorStack.top()->data, operatorStack.top()->type);
+        operatorStack.pop(); // pop )
+        operatorNode->right = nodeStack.top();
+        nodeStack.pop();
+        if (operatorNode->type != 1) {
+            operatorNode->left = nodeStack.top();
+            nodeStack.pop();
+        }
+        nodeStack.push(operatorNode);
+    }
+    // haakjes zijn uit expressie gehaald,
+    // precedence is uitgewerkt in ast
     return nodeStack.top();
 } // AST
 

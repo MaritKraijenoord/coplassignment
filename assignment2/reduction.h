@@ -34,7 +34,6 @@ class Node {
             left = nullptr;
             right = nullptr;
         };
-        // type 5 = apply
 };
 
 class Reduction {
