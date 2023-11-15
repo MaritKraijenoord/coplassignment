@@ -1,3 +1,4 @@
+Assignment 1:
 This repository contains the files that make up the assignment(s) for concepts of programming languages.
 The standard format is as follows: there is one main.cc file which contains the main code. 
 Classes and their implementations are split into separate .h/.cc files which contain the class declaration (.h) and its implementation (.cc)
@@ -13,6 +14,13 @@ After tokenizing the input goes through the parser, where if statements guide ea
 correspond to the LL grammar of lambda calculus. As the program moves through these functions, accepted input is added to a string, until either the whole
 input is accepted, in which case the program exits with exit status 0 and prints said string, 
 or the input contains a syntax error in which case the input is erased from the string and the program exits with exit status 1 and an error message.
+
+
+Students:
+Marit Kraijenoord, s3180131
+Jasmijn Makop, s3688321
+
+Assignment 2:
 
 
 Students:
