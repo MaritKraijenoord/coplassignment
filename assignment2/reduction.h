@@ -53,9 +53,9 @@ class Reduction {
 
         void ASTtraversal(Node* root); // doorloopt abstract syntax tree (in-order traversal)
 
-        // functie voor alfa reductie
+        // functie voor alpha conversion
         
-        // functie voor beta reductie
+        // functie voor beta reduction
 };
 
 #endif

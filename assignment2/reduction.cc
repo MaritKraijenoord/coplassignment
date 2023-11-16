@@ -80,7 +80,7 @@ Node* Reduction::AST () {
         } */ // delete
         data = tokens[i].var;
         Node* newNode = new Node(data, type);
-        cout << "node: " << newNode->data << " " << newNode->type << endl;
+        //cout << "node: " << newNode->data << " " << newNode->type << endl;
         if (newNode->type == 0) { // variabele
             nodeStack.push(newNode);
         } else if (newNode->type == 2) { // open bracket (
