@@ -11,6 +11,7 @@
 using namespace std;
 
 int main () {
+    // zorgen dat inlezen kan vanuit bestand
     string input;
     cout << "Geef de input string" << endl;
     getline(cin, input);

@@ -53,9 +53,16 @@ class Reduction {
 
         void ASTtraversal(Node* root); // doorloopt abstract syntax tree (in-order traversal)
 
-        // functie voor alpha conversion
-        
-        // functie voor beta reduction
+        Node* fullReduction(Node* root); // start het reduction-proces
+    
+    private:
+
+        Node* alphaBetaRed(Node* root); // help-functie voor uitvoeren alpha conversion en beta reduction
+
+        void alphaConv(Node* root, string oldVar, string newVar); // voert alpha conversion uit
+
+        Node* betaRed(Node* root, string var, Node* replacement); // voert beta reduction uit
+    
 };
 
 #endif

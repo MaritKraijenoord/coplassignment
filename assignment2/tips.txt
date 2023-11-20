@@ -1,2 +1,0 @@
-https://stackoverflow.com/questions/34140819/lambda-calculus-reduction-steps 
-https://en.wikipedia.org/wiki/Lambda_calculus#Beta_reduction 

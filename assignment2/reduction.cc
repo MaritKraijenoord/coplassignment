@@ -73,14 +73,8 @@ Node* Reduction::AST () {
     string data;
     for (size_t i = 0; i < tokens.size(); i++) {
         int type = tokens[i].type;
-        /* if (type == 4) {
-            data = "apply";
-        } else {
-            data = tokens[i].var;
-        } */ // delete
         data = tokens[i].var;
         Node* newNode = new Node(data, type);
-        //cout << "node: " << newNode->data << " " << newNode->type << endl;
         if (newNode->type == 0) { // variabele
             nodeStack.push(newNode);
         } else if (newNode->type == 2) { // open bracket (
@@ -126,3 +120,54 @@ void Reduction::ASTtraversal(Node* root) {
         ASTtraversal(root->right);
     }
 } // ASTtraversal
+
+// start het reduction-proces
+Node* Reduction::fullReduction(Node* root) {
+    Node* prevRoot = nullptr;
+    int count = 0;
+    while (root != prevRoot) {
+        prevRoot = root;
+        root = alphaBetaRed(root);
+        count++;
+        if (count > 10) {
+            exit(2);
+        }
+    }
+    return root;
+} // fullReduction
+
+// help-functie voor uitvoeren alpha conversion en beta reduction
+Node* Reduction::alphaBetaRed(Node* root) {
+    if (root == nullptr) {
+        return nullptr;
+    }
+    // voer alpha conversion en beta reduction uit?
+
+    return root;
+} // alphaBetaRed
+
+// voert alpha conversion uit
+void Reduction::alphaConv(Node* root, string oldVar, string newVar) {
+    if (root == nullptr) {
+            return;
+    }
+    if (root->type == 0 && root->data == oldVar) {
+        root->data = newVar;
+    }
+    alphaConv(root->left, oldVar, newVar);
+    alphaConv(root->right, oldVar, newVar);
+} // alphaConv
+
+// voert beta reduction uit
+Node* Reduction::betaRed(Node* root, string var, Node* replacement) {
+    if (root == nullptr) {
+        return nullptr;
+    }
+    if (root->type == 0 && root->data == var) {
+        delete root;
+        return replacement;
+    }
+    root->left = betaRed(root->left, var, replacement);
+    root->right = betaRed(root->right, var, replacement);
+    return root;
+} // betaRed
