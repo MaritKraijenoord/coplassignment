@@ -1,0 +1,6 @@
+(a543 - (no closing parentheses)
+(123a c) - (variable starts with a number)
+\x   - (not enough expressions after lambda)
+\ - (no variable after lambda)
+(a32231 - (no closing parenthesis)
+a3d) - (missing opening parenthesis)
