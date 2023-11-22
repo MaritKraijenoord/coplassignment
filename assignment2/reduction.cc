@@ -141,33 +141,91 @@ Node* Reduction::alphaBetaRed(Node* root) {
     if (root == nullptr) {
         return nullptr;
     }
-    // voer alpha conversion en beta reduction uit?
-
+    // alpha conversion
+    alphaConvVar(root, false);
+    alphaConvApp(root, false);
+    cout << "Gevonden variabelen (captured): ";
+    for (size_t i = 0; i < usedVar.size(); i++) {
+        cout << usedVar[i]->data << " ";
+    }
+    cout << endl;
+    cout << "Gevonden variabelen (free): ";
+    for (size_t i = 0; i < freeVar.size(); i++) {
+        cout << freeVar[i]->data << " ";
+    }
+    int N = 97;
+    string change = "A";
+    for (size_t i = 0; i < freeVar.size(); i++) {
+        for (size_t j = 0; j < usedVar.size(); j++) {
+            if (freeVar[i]->data == usedVar[i]->data) {
+                freeVar[i]->data = change + char(N);
+                N++;
+                if (N > 122) {
+                    N = 97;
+                    change = change + char(N);
+                }
+            }
+        }
+    }
+    int count = 0;
+    Node* node = nullptr;
+    while (node != root) {
+        node = root;
+        // beta reduction
+        root = betaRed(root, "x", node);
+        count++;
+        // controle niet oneindig blijven reduction
+        if (count > 10) {
+            exit(2);
+        }
+    }
     return root;
 } // alphaBetaRed
 
 // voert alpha conversion uit
-void Reduction::alphaConv(Node* root, string oldVar, string newVar) {
+void Reduction::alphaConvVar(Node* root, bool lambdaParent) {
     if (root == nullptr) {
-            return;
+        return;
     }
-    if (root->type == 0 && root->data == oldVar) {
-        root->data = newVar;
+    if (root->type == 1) { // lambda
+        lambdaParent = true;
+        alphaConvVar(root->left, lambdaParent);
+        alphaConvVar(root->right, lambdaParent);
+        lambdaParent = false;
+    } else if (root->type == 0 && lambdaParent) { // variable
+        usedVar.push_back(root);
+    } else {
+        alphaConvVar(root->left, lambdaParent);
+        alphaConvVar(root->right, lambdaParent);
     }
-    alphaConv(root->left, oldVar, newVar);
-    alphaConv(root->right, oldVar, newVar);
-} // alphaConv
+} // alphaConvVar
+
+// checkt vrije variabelen
+void Reduction::alphaConvApp (Node* root, bool app) {
+    if (root == nullptr) {
+        return;
+    }
+    if (root->type == 4) { // space
+        app = true;
+        alphaConvApp(root->left, app);
+        alphaConvApp(root->right, app);
+        app = false;
+    } else if (root->type == 1) { // lambda (captured)
+        return;
+    } else if (root->type == 0 && app) { // variable
+        freeVar.push_back(root);
+    } else {
+        alphaConvApp(root->left, app);
+        alphaConvApp(root->right, app);
+    }
+} // alphaConvApp
 
 // voert beta reduction uit
 Node* Reduction::betaRed(Node* root, string var, Node* replacement) {
     if (root == nullptr) {
         return nullptr;
     }
-    if (root->type == 0 && root->data == var) {
-        delete root;
-        return replacement;
-    }
-    root->left = betaRed(root->left, var, replacement);
-    root->right = betaRed(root->right, var, replacement);
+    // zoek application
+    // zoek lambda
     return root;
 } // betaRed

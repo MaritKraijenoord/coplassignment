@@ -41,6 +41,8 @@ class Reduction {
         string input; // input
         int index;
         vector<Token> tokens;
+        vector<Node*> usedVar;
+        vector<Node*> freeVar;
 
     public:
         Reduction(); // constructor
@@ -59,7 +61,9 @@ class Reduction {
 
         Node* alphaBetaRed(Node* root); // help-functie voor uitvoeren alpha conversion en beta reduction
 
-        void alphaConv(Node* root, string oldVar, string newVar); // voert alpha conversion uit
+        void alphaConvVar(Node* root, bool lambdaParent); // voert alpha conversion uit
+
+        void alphaConvApp(Node* root, bool app); // checkt vrije variabelen
 
         Node* betaRed(Node* root, string var, Node* replacement); // voert beta reduction uit
     

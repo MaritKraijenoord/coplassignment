@@ -33,6 +33,7 @@ int main (int argc, char* argv[]) {
                 Node* root = R1->AST();
                 R1->ASTtraversal(root);
                 cout << endl;
+                R1->fullReduction(root);
             }
             cout << "Geef nieuwe input (of n voor stoppen)" << endl;
             getline(cin, input);
