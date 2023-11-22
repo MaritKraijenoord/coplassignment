@@ -11,7 +11,7 @@ enum Tokenizer {
 };
 
 // constructor parser
-Parser::Parser (string input) {
+Parser::Parser (string input, bool file) {
     string variabele = "";
     string opnieuwParsen;
     resultaat = "";
@@ -52,20 +52,18 @@ Parser::Parser (string input) {
         }
     }
     index = 0;
-    cout << "Input:";
-    for (size_t i = 0; i < tokens.size(); i++) {
-        cout << " " << tokens[i].second;
-    }
-    cout << endl;
     expr();
     cout << resultaat << endl;
-    cout << "Wil u het resultaat opnieuw parsen? (j/n)" << endl;
-    cin >> opnieuwParsen;
-    if (opnieuwParsen == "J" || opnieuwParsen == "j") {
-        Parser* P2 = new Parser(resultaat);
-    } else {
-        cout << "Er wordt niet opnieuw geparsed." << endl;
+    if (!file) {
+        cout << "Wil u het resultaat opnieuw parsen? (j/n)" << endl;
+        cin >> opnieuwParsen;
+        if (opnieuwParsen == "J" || opnieuwParsen == "j") {
+            Parser* P2 = new Parser(resultaat, file);
+        } else {
+            cout << "Er wordt niet opnieuw geparsed." << endl;
+        }
     }
+    
 }
 
 // expr functie
