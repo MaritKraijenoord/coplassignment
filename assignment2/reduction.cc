@@ -123,16 +123,7 @@ void Reduction::ASTtraversal(Node* root) {
 
 // start het reduction-proces
 Node* Reduction::fullReduction(Node* root) {
-    Node* prevRoot = nullptr;
-    int count = 0;
-    while (root != prevRoot) {
-        prevRoot = root;
-        root = alphaBetaRed(root);
-        count++;
-        if (count > 10) {
-            exit(2);
-        }
-    }
+    root = alphaBetaRed(root);
     return root;
 } // fullReduction
 
@@ -153,11 +144,12 @@ Node* Reduction::alphaBetaRed(Node* root) {
     for (size_t i = 0; i < freeVar.size(); i++) {
         cout << freeVar[i]->data << " ";
     }
+    cout << endl;
     int N = 97;
     string change = "A";
     for (size_t i = 0; i < freeVar.size(); i++) {
         for (size_t j = 0; j < usedVar.size(); j++) {
-            if (freeVar[i]->data == usedVar[i]->data) {
+            if (freeVar[i]->data == usedVar[j]->data) {
                 freeVar[i]->data = change + char(N);
                 N++;
                 if (N > 122) {
@@ -168,17 +160,24 @@ Node* Reduction::alphaBetaRed(Node* root) {
         }
     }
     int count = 0;
-    Node* node = nullptr;
-    while (node != root) {
-        node = root;
+    Node* prevRoot = nullptr;
+    while (root != prevRoot) {
+        prevRoot = root;
         // beta reduction
-        root = betaRed(root, "x", node);
+        if (root->type == 4) {
+            for (size_t i = 0; i < usedVar.size(); i++) {
+                root = betaRed(root, usedVar[i]->data, freeVar[i]);
+            }
+        }
         count++;
-        // controle niet oneindig blijven reduction
+        // controle niet oneindig reduction blijven proberen
         if (count > 10) {
             exit(2);
         }
     }
+    if (prevRoot != nullptr) {
+        delete prevRoot;
+    }    
     return root;
 } // alphaBetaRed
 
@@ -210,7 +209,7 @@ void Reduction::alphaConvApp (Node* root, bool app) {
         alphaConvApp(root->left, app);
         alphaConvApp(root->right, app);
         app = false;
-    } else if (root->type == 1) { // lambda (captured)
+    } else if (root->type == 1) { // lambda (captured variables)
         return;
     } else if (root->type == 0 && app) { // variable
         freeVar.push_back(root);
@@ -225,7 +224,11 @@ Node* Reduction::betaRed(Node* root, string var, Node* replacement) {
     if (root == nullptr) {
         return nullptr;
     }
-    // zoek application
-    // zoek lambda
+    if (root->type == 1 && root->data == var) {
+        delete root;
+        return replacement;
+    }
+    root->left = betaRed(root->left, var, replacement);
+    root->right = betaRed(root->right, var, replacement);
     return root;
 } // betaRed

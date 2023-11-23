@@ -34,6 +34,8 @@ int main (int argc, char* argv[]) {
                 R1->ASTtraversal(root);
                 cout << endl;
                 R1->fullReduction(root);
+                R1->ASTtraversal(root);
+                cout << endl;
             }
             cout << "Geef nieuwe input (of n voor stoppen)" << endl;
             getline(cin, input);

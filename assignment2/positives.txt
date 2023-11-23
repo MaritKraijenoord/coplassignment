@@ -1,7 +1,6 @@
-(ab c)
-\x b a
-(ab a123)
-( a2 b5 )
-((( a5 )))
-a3 (a5 a873)
-a1 a2 a3 
+(x y)
+\x \y (x \z y)
+(\x x)(\y y)
+(\x \y x)(\z y)
+(\x y)((\x (x x))(\x (x x)))
+(\x x x)(\x x x)
