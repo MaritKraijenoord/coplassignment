@@ -11,7 +11,7 @@ enum Tokenizer {
 };
 
 // constructor parser
-Parser::Parser (string input) {
+Parser::Parser (string input, bool file) {
     string variabele = "";
     string opnieuwParsen;
     resultaat = "";
@@ -30,7 +30,7 @@ Parser::Parser (string input) {
                     (input[i] >= 97 && input[i] <= 122)) {
             if (input[i] >= 48 && input[i] <= 57 && 
                 (input[i-1] == ' ' || input[i-1] == ')' ||input[i-1] == '(')) {
-                cout << "Syntax error: variabele mag niet met getal beginnen" << endl;
+                cerr << "Syntax error: variabele mag niet met getal beginnen" << endl;
                 exit(1);
             } else {
                 variabele = input[i];
@@ -47,25 +47,23 @@ Parser::Parser (string input) {
             variabele = " ";
             tokens.push_back(make_pair(space, variabele));
         } else {
-            cout << "Syntax error: karakter niet herkend" << endl;
+            cerr << "Syntax error: karakter niet herkend" << endl;
             exit(1);
         }
     }
     index = 0;
-    cout << "Input:";
-    for (size_t i = 0; i < tokens.size(); i++) {
-        cout << " " << tokens[i].second;
-    }
-    cout << endl;
     expr();
     cout << resultaat << endl;
-    cout << "Wil u het resultaat opnieuw parsen? (j/n)" << endl;
-    cin >> opnieuwParsen;
-    if (opnieuwParsen == "J" || opnieuwParsen == "j") {
-        Parser* P2 = new Parser(resultaat);
-    } else {
-        cout << "Er wordt niet opnieuw geparsed." << endl;
+    if (!file) {
+        cout << "Wil u het resultaat opnieuw parsen? (j/n)" << endl;
+        cin >> opnieuwParsen;
+        if (opnieuwParsen == "J" || opnieuwParsen == "j") {
+            Parser* P2 = new Parser(resultaat, file);
+        } else {
+            cout << "Er wordt niet opnieuw geparsed." << endl;
+        }
     }
+    
 }
 
 // expr functie
@@ -110,7 +108,7 @@ void Parser::lexpr () {
                 index++;
             }
         } else {
-            cout << "Syntax error: missing variable" << endl;
+            cerr << "Syntax error: missing variable" << endl;
             exit(1);
         }
         lexpr();
@@ -140,11 +138,11 @@ void Parser::pexpr () {
                 index++;
             }
         } else {
-            cout << "Syntax error: missing closing parenthesis" << endl;
+            cerr << "Syntax error: missing closing parenthesis" << endl;
             exit(1);
         }
     } else if (tokens[index].second == "(" && tokens[index-1].second == ")" ) {
-        cout << "Syntax error: missing variable" << endl;
+        cerr << "Syntax error: missing variable" << endl;
         exit(1);
     } else if (tokens[index].first == Tokenizer::var) {
         //cout << tokens[index].second; // var

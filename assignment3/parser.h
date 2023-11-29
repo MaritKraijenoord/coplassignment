@@ -1,7 +1,7 @@
 // definitie parser class
 
-#ifndef ParserHVAR3 // voorkom dat dit bestand meerdere keren
-#define ParserHVAR3 // ge-include wordt
+#ifndef ParserHVAR // voorkom dat dit bestand meerdere keren
+#define ParserHVAR // ge-include wordt
 
 #include <fstream>
 #include <iostream>
@@ -11,7 +11,7 @@ using namespace std;
 
 class Parser {
     public:
-        Parser (string input);
+        Parser (string input, bool file);
 
         void expr ();
 
