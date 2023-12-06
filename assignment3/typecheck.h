@@ -6,19 +6,26 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
 
 class Node {
-    string data;
-    Node* left;
-    Node* right;
+    public:
+        string data;
+        Node* left;
+        Node* right;
 
-    Node (string var) {
-        data = var;
-        left = nullptr;
-        right = nullptr;
-    }
+        Node (string var) {
+            data = var;
+            left = nullptr;
+            right = nullptr;
+        }
 
+        Node () {
+            data = "";
+            left = nullptr;
+            right = nullptr;
+        }
 };
 
 class Typecheck {
@@ -27,14 +34,24 @@ class Typecheck {
         
         void judgement();
 
-        void expr();
+        Node* expr(string p1);
 
-        void type();
+        Node* type(string p1);
 
-        void AST();
+        bool lvar(string p1, Node* &node);
+        
+        bool uvar(string p1, Node* &node);
+
+        void ASTtraversal(Node* root);
+
+        void deleteAST(Node* root);
+
+        Node* treeroot = nullptr;
 
     private:
         string exp;
+        size_t index;
+        bool arrow;
 };
 
 #endif

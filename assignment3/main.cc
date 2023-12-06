@@ -24,18 +24,24 @@ int main (int argc, char* argv[]) {
             cerr << "Error opening file: " << argv[1] << endl;
         }
     } else {
-        cout << "Geef de input string" << endl;
-        getline(cin, input);
-        Parser* P1 = new Parser(input, false);
-        while (input != "n") {
-            cout << "Geef nieuwe input (of n voor stoppen)" << endl;
-            getline(cin, input);
-        }
         cout << "Geef input string (typecheck)" << endl;
         getline(cin, input);
         Typecheck* T1 = new Typecheck(input);
+        T1->ASTtraversal(T1->treeroot);
+        cout << endl;
+        T1->deleteAST(T1->treeroot);
         delete T1;
-        delete P1;
+        cout << "Geef een nieuwe input string (of s voor stoppen)" << endl;
+        getline(cin, input);
+        while (input != "s") {
+            Typecheck* T2 = new Typecheck(input);
+            T2->ASTtraversal(T2->treeroot);
+            cout << endl;
+            T2->deleteAST(T2->treeroot);
+            delete T2;
+            cout << "Geef een nieuwe input string (of s voor stoppen)" << endl;
+            getline(cin, input);
+        }
     }
     return 0;
 }//main
