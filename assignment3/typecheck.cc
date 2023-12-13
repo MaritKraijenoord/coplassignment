@@ -12,7 +12,10 @@ Typecheck::Typecheck (string input) {
     exp = input;
     index = 0;
     arrow = false;
+    char cl = '?';
+    char cu = '?';
     judgement();
+    // typecheck
 } // constructor
 
 // judgement
@@ -28,7 +31,7 @@ void Typecheck::judgement () {
         }
     }
     if (!correct) {
-        cerr << "Syntax error: no ':' found" << endl;
+        cerr << "Syntax error: missing types" << endl;
         exit(1);
     }
     expression = exp.substr(0, location);
@@ -79,7 +82,7 @@ Node* Typecheck::expr (string p1) {
     } else if (lvar(p1, n4)) {
         return n4;
     } else if (index < p1.size() && !lvar(p1, n4)) {
-        Node* node = new Node("@"); // apply
+        Node* node = new Node("@"); // application
         node->left = expr(p1);
         if (index < p1.size() && p1[index] != ' ') {
             cerr << "Syntax error: space expected for application, not found" << endl;
@@ -144,6 +147,7 @@ bool Typecheck::lvar (string p1, Node* &node) {
             s = s + p1[index];
             index++;
         }
+        node->cat = 2;
         node->data = s;
         return true;
     } else if (index < p1.size()) {
@@ -166,10 +170,16 @@ bool Typecheck::uvar (string p1, Node* &node) {
             s = s + p1[index];
             index++;
         }
-        // problem: accepts A>_B as just A (should be an error)
+        if (index < p1.size() && p1[index] != ')' && p1[index] != '-' 
+            && p1[index] != '(' && p1[index] != '\\' && p1[index] != ' ') {
+            cout << "index:" << p1[index] << endl;
+            cerr << "Syntax error: wrong character" << endl;
+            exit(1);
+        }
         if (index < p1.size()-1 && p1[index] == '-' && p1[index+1] == '>') {
             arrow = true;
         }
+        node->cat = 1;
         node->data = s;
         return true;
     } else if (index < p1.size()) {
@@ -199,3 +209,16 @@ void Typecheck::deleteAST (Node* root) {
     deleteAST(root->right);
     delete root;
 } // deleteAST
+
+// convert
+void Typecheck::convert (Node* root) {
+    if (root->data == "\\") { // lambda
+        convert(root->left);
+    } else if (root->data == "^") {
+        convert(root->right);
+    } else if (root->cat == 1) { // uvar
+        // change uvar and lvar
+    } else if (root->cat == 2) { // lvar
+        // change uvar and lvar
+    }
+} // convert

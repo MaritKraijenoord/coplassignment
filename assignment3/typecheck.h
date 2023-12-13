@@ -14,17 +14,20 @@ class Node {
         string data;
         Node* left;
         Node* right;
+        int cat;
 
         Node (string var) {
             data = var;
             left = nullptr;
             right = nullptr;
+            cat = 0;
         }
 
         Node () {
             data = "";
             left = nullptr;
             right = nullptr;
+            cat = 0;
         }
 };
 
@@ -46,12 +49,16 @@ class Typecheck {
 
         void deleteAST(Node* root);
 
+        void convert(Node* root); 
+
         Node* treeroot = nullptr;
 
     private:
         string exp;
         size_t index;
         bool arrow;
+        char cl, cu;
+        vector<pair<string, string>> con;
 };
 
 #endif

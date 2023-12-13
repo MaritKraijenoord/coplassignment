@@ -28,6 +28,7 @@ int main (int argc, char* argv[]) {
         getline(cin, input);
         Typecheck* T1 = new Typecheck(input);
         T1->ASTtraversal(T1->treeroot);
+        T1->convert(T1->treeroot->left);
         cout << endl;
         T1->deleteAST(T1->treeroot);
         delete T1;
