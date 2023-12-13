@@ -24,7 +24,8 @@ Marit Kraijenoord - Jasmijn Makop
 
 Assignment 2:
 The compiler version used is gcc compiler, and the operating system used is Windows 11. The program works correctly and there are no deviations from the assignment.
-
+The program works by first tokenizing the input and then parsing it into an abstract syntax tree. After this it reduces the syntax tree through alpha conversion and 
+beta reduction. 
 
 Students:
 Marit Kraijenoord, s3180131
