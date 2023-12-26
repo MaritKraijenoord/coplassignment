@@ -11,7 +11,7 @@
 using namespace std;
 
 int main (int argc, char* argv[]) {
-    string input;
+    string input = "j";
     if (argc > 1) {
         ifstream file(argv[1]);
         if (file.is_open()) {
@@ -23,11 +23,13 @@ int main (int argc, char* argv[]) {
             cerr << "Error opening file: " << argv[1] << endl;
         }
     } else {
-        cout << "Geef de input string" << endl;
+        Parser* P1 = nullptr;
+        cout << "Geef de input string (of n voor stoppen)" << endl;
         getline(cin, input);
-        Parser* P1 = new Parser(input, false);
         while (input != "n") {
-            cout << "Geef nieuwe input (of n voor stoppen)" << endl;
+            P1 = new Parser(input, false);
+            delete P1;
+            cout << "Geef de input string (of n voor stoppen)" << endl;
             getline(cin, input);
         }
         delete P1;
