@@ -44,8 +44,14 @@ Concepts of programming languages (semester 1 of 2023/2024)
 Marit Kraijenoord - Jasmijn Makop
 
 Assignment 3:
-The compiler version used is gcc compiler, and the operating system used is Windows 11. [The program works correctly and there are no deviations from the assignment.]
-
+The compiler version used is gcc compiler, and the operating system used is Windows 11. 
+The program works correctly and there are no deviations from the assignment.
+The program works by first tokenizing and parsing the judgement into an abstract syntax tree. The token and corresponding variable are put into a vector.
+It then traverses the avstract syntax tree, that is based on the Backus-Naur grammar. This is the program checking whether the judgement can be derived from
+said Backus-Naur grammar. If any syntax errors are found the program exits with exit status 1 and a corresponding error message explaining the error. 
+that was given in the assignment. If the judgement can in fact be derived from the given Backus-Naur grammar the program returns the string resulting from
+the re-combining of the parsed variables from the vectors. After printing the result the program can run again on a different (or the same) judgement or be
+quit by the user. 
 
 Students:
 Marit Kraijenoord, s3180131
