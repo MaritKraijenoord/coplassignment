@@ -32,8 +32,9 @@ closedb or space) and the symbol corresponding to the variable itself. It then p
 By going through the abstract syntax tree the string containing the eventual result gets
 filled up with the symbols corresponding to the input, parsed by the program. If there are no syntax errors, the result gets printed. The result can be input
 for the program and yield the exact same result. If the program encounters any syntax errors it exits with status 1 and a corresponding error message.
-The syntax tree gets reduced through alpha conversion and beta reduction [explanation of this and reduction strategies]
-There is a safeguard against the program infinitely trying to reduce. 
+The syntax tree gets reduced through alpha conversion and beta reduction, by going root by root and finding the used variables and replacing them with free ones, before
+correcting roots and reducing the abstract syntax tree.
+There is a safeguard against the program infinitely trying to reduce. If the program tries to beta reduce more than ten times the program exits with exit status 2.
 
 Students:
 Marit Kraijenoord, s3180131
