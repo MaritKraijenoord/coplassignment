@@ -35,6 +35,7 @@ for the program and yield the exact same result. If the program encounters any s
 The syntax tree gets reduced through alpha conversion and beta reduction, by going root by root and finding the used variables and replacing them with free ones, before
 correcting roots and reducing the abstract syntax tree.
 There is a safeguard against the program infinitely trying to reduce. If the program tries to beta reduce more than ten times the program exits with exit status 2.
+The reduction strategy that is used is left-most innermost.
 
 Students:
 Marit Kraijenoord, s3180131
