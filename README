@@ -23,9 +23,17 @@ Concepts of programming languages (semester 1 of 2023/2024)
 Marit Kraijenoord - Jasmijn Makop
 
 Assignment 2:
-The compiler version used is gcc compiler, and the operating system used is Windows 11. The program works correctly and there are no deviations from the assignment.
-The program works by first tokenizing the input and then parsing it into an abstract syntax tree. After this it reduces the syntax tree through alpha conversion and 
-beta reduction. 
+The compiler version used is gcc compiler, and the operating system used is Windows 11. 
+The program works correctly and there are no deviations from the assignment.
+The program works by tokenizing the input and parsing it into an abstract syntax tree. 
+The program tokenizes the input, (also making sure that the var is of the correct form,
+by checking that it does not start with a number), and makes vector pairs of the enum corresponding to the inputted variable, (which is either var, lambda, openb, 
+closedb or space) and the symbol corresponding to the variable itself. It then places the tokens into the abstract syntax tree.
+By going through the abstract syntax tree the string containing the eventual result gets
+filled up with the symbols corresponding to the input, parsed by the program. If there are no syntax errors, the result gets printed. The result can be input
+for the program and yield the exact same result. If the program encounters any syntax errors it exits with status 1 and a corresponding error message.
+The syntax tree gets reduced through alpha conversion and beta reduction [explanation of this and reduction strategies]
+There is a safeguard against the program infinitely trying to reduce. 
 
 Students:
 Marit Kraijenoord, s3180131
