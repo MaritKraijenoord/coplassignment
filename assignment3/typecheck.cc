@@ -12,8 +12,6 @@ Typecheck::Typecheck (string input) {
     exp = input;
     index = 0;
     arrow = false;
-    char cl = '?';
-    char cu = '?';
     judgement();
     // typecheck
 } // constructor
@@ -36,13 +34,24 @@ void Typecheck::judgement () {
     }
     expression = exp.substr(0, location);
     types = exp.substr(location+1);
-    cout << "expr: " << expression << endl;
-    cout << "type: " << types << endl;
+    // cout << "expr: " << expression << endl;
+    // cout << "type: " << types << endl;
     // start boom
     treeroot = new Node(":");
+    index = 0;
     treeroot->left = expr(expression);
     index = 0;
     treeroot->right = type(types);
+    lambda = false;
+    treeroot->left = convert(treeroot->left);
+    if (compare(treeroot->left, treeroot->right)) {
+        cout << exp << endl;
+        ASTtraversal(treeroot);
+        cout << endl;
+        cout << "Correct expression" << endl;
+    } else {
+        cout << "Incorrect expression" << endl;
+    }
 } // judgement
 
 // expr
@@ -53,10 +62,9 @@ Node* Typecheck::expr (string p1) {
         index++;
         n4 = expr(p1);
         if (p1[index] != ')') {
-            cerr << "Syntax error: no ')' found" << endl;
+            cerr << "Syntax error: ')' expected, not found" << endl;
             exit(1);
         }
-        index++;
         return n4;
     } else if (index < p1.size() && p1[index] == '\\') {
         s = p1[index];
@@ -124,9 +132,9 @@ Node* Typecheck::type (string p1) {
         index++;
         Node* node = type(p1);
         if (p1[index] != ')') {
-            cerr << "Syntax error: no ')' found" << endl;
+            cerr << "Syntax error: ')' expected, not found" << endl;
             exit(1);
-        }
+        } 
         index++;
         return node;
     } else {
@@ -195,8 +203,13 @@ void Typecheck::ASTtraversal (Node* root) {
     if (root == nullptr) {
         return;
     }
-    ASTtraversal(root->left);
-    cout << root->data << " ";
+    if (root->data == "\\") {
+        cout << root->data << " ";
+        ASTtraversal(root->left);
+    } else {
+        ASTtraversal(root->left);
+        cout << root->data << " ";
+    }
     ASTtraversal(root->right);
 } // ASTtraversal
 
@@ -210,15 +223,63 @@ void Typecheck::deleteAST (Node* root) {
     delete root;
 } // deleteAST
 
-// convert
-void Typecheck::convert (Node* root) {
-    if (root->data == "\\") { // lambda
-        convert(root->left);
-    } else if (root->data == "^") {
-        convert(root->right);
-    } else if (root->cat == 1) { // uvar
-        // change uvar and lvar
-    } else if (root->cat == 2) { // lvar
-        // change uvar and lvar
+// kopieert een boom vanaf de meegegeven node
+Node* Typecheck::copyTree(Node* node) {
+    if (node == nullptr) {
+        return nullptr;
     }
+    Node* newNode = new Node(node->data);
+    newNode->left = copyTree(node->left);
+    newNode->right = copyTree(node->right);
+    return newNode;
+} // copyTree
+
+// convert
+Node* Typecheck::convert (Node* root) {
+    if (root->data == "\\") { // lambda
+        lambda = true;
+        root->data = "->"; 
+        root->left = convert(root->left);
+        lambda = false;
+        root->right = convert(root->right);
+        if (varleft == varright) {
+            if (root->right->data == varright) {
+                root->right->data = root->left->data;
+            }
+            return root;
+        } else {
+            cerr << "Syntax error: unknown type" << endl;
+            exit(1);
+        }
+    } else if (root->data == "^") { // roof
+        root->left = convert(root->left);
+        root = convert(root->right);
+    } else if (root->cat == 1) { // uvar
+        return root;
+    } else if (root->cat == 2) { // lvar
+        if (lambda) {
+            varleft = root->data;
+        } else {
+            varright = root->data;
+        }
+    } else if (root->data == "@") { // application
+        root->left = convert(root->left);
+        root->right = convert(root->right);
+    }
+    return root;
 } // convert
+
+// compare
+bool Typecheck::compare (Node* left, Node* right) {
+    if (left == nullptr && right == nullptr) {
+        return true;
+    } else if ((left == nullptr && right != nullptr) || (left != nullptr && right == nullptr)) {
+        return false;
+    }
+    if (left->data == right->data) {
+        if (compare(left->left, right->left) && compare(left->right, right->right)) {
+            return true;
+        }
+    }
+    return false;
+}

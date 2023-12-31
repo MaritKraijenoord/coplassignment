@@ -1,6 +1,4 @@
-x : (A -> A)
-y : (B)
-(\x ^ A x) : (A -> A)
-(x y) : ( A -> (A) )
-(\x ^ (A -> A) x y) : A
-(x y) : (B -> (A -> C))
+(\x^A x):(A->A)
+(\x^B (\x^A x)):(B->(A->A))
+(\ax^BC ax):(BC->BC)
+(\z^Z (\w^W (\y^Y y))):(Z->(W->(Y->Y)))

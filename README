@@ -6,7 +6,7 @@ Variables are named using lowercase letters in case of one-word variables and ca
 During programming, multiple checkpoints are made to keep track of progress. At each checkpoint, the changes are committed.
 Each function in the program has a line with commentary in which is explained what that function does.
 The program works as intended
-There are no known deviations to the assignment
+There are no known defects or deviations to the assignment
 The program works by first tokenizing the input, where the input is split up into variables, which are strings of letters and numbers that start with a number, 
 opening parentheses, closing parentheses, whitespace and lambdas (or backslashes). The tokens and corresponding characters are then put into a vector that 
 the parser moves through.
@@ -24,7 +24,10 @@ Marit Kraijenoord - Jasmijn Makop
 
 Assignment 2:
 The compiler version used is gcc compiler, and the operating system used is Windows 11. 
-The program works correctly and there are no deviations from the assignment.
+The program works partly correctly, there are a few known defects:
+- alpha conversion does not correctly convert all captured variables. It converts all duplicate variables, even the ones that should not be converted
+- in beta reduction, the tree is not correctly copied in all cases, resulting in a wrong tree.
+
 The program works by tokenizing the input and parsing it into an abstract syntax tree. 
 The program tokenizes the input, (also making sure that the var is of the correct form,
 by checking that it does not start with a number), and makes vector pairs of the enum corresponding to the inputted variable, (which is either var, lambda, openb, 
@@ -45,13 +48,15 @@ Marit Kraijenoord - Jasmijn Makop
 
 Assignment 3:
 The compiler version used is gcc compiler, and the operating system used is Windows 11. 
-The program works correctly and there are no deviations from the assignment.
+The program works mostly correctly, but there is one known defect:
+- the program does not accept any expressions which contains application in a lambda expression, these examples are not given in positives.txt
+
 The program works by first tokenizing and parsing the judgement into an abstract syntax tree. The token and corresponding variable are put into a vector.
-It then traverses the avstract syntax tree, that is based on the Backus-Naur grammar. This is the program checking whether the judgement can be derived from
+It then traverses the abstract syntax tree, that is based on the Backus-Naur grammar. This is the program checking whether the judgement can be derived from
 said Backus-Naur grammar. If any syntax errors are found the program exits with exit status 1 and a corresponding error message explaining the error. 
-that was given in the assignment. If the judgement can in fact be derived from the given Backus-Naur grammar the program returns the string resulting from
+If the judgement can in fact be derived from the given Backus-Naur grammar the program returns the string resulting from
 the re-combining of the parsed variables from the vectors. After printing the result the program can run again on a different (or the same) judgement or be
-quit by the user. 
+quit by the user.
 
 Students:
 Marit Kraijenoord, s3180131

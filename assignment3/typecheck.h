@@ -49,7 +49,11 @@ class Typecheck {
 
         void deleteAST(Node* root);
 
-        void convert(Node* root); 
+        Node* copyTree(Node* node);
+
+        Node* convert(Node* root); 
+
+        bool compare(Node* left, Node* right);
 
         Node* treeroot = nullptr;
 
@@ -57,7 +61,8 @@ class Typecheck {
         string exp;
         size_t index;
         bool arrow;
-        char cl, cu;
+        bool lambda;
+        string varleft, varright;
         vector<pair<string, string>> con;
 };
 
