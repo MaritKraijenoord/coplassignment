@@ -11,7 +11,7 @@ using namespace std;
 
 class Parser {
     public:
-        Parser (string& input, bool file);
+        Parser (string input, bool file);
 
         void expr ();
 

@@ -12,36 +12,34 @@
 using namespace std;
 
 int main (int argc, char* argv[]) {
+    // bij inlezen vanuit file
+    // zet aan het eind een n op een aparte regel
     string input;
-    if (argc > 1) {
-        ifstream file(argv[1]);
-        if (file.is_open()) {
-            while(getline(file, input)) {
-                Parser* P1 = new Parser(input, true);
-                delete P1;
-            }
-        } else {
-            cerr << "Error opening file: " << argv[1] << endl;
-        }
+    bool file;
+    if (argc > 0) {
+        file = true;
     } else {
-        cout << "Geef de input string" << endl;
-        getline(cin, input);
-        Parser* P1 = new Parser(input, false);
-        while (input != "n") {
-            Reduction* R1 = new Reduction();
-            if (R1->tokenizer(input)) {
-                Node* root = R1->AST();
-                R1->ASTtraversal(root);
-                cout << endl;
-                R1->fullReduction(root);
-                R1->ASTtraversal(root);
-                cout << endl;
-            }
-            cout << "Geef nieuwe input (of n voor stoppen)" << endl;
-            getline(cin, input);
-            delete R1;
-        }
-        delete P1;
+        file = false;
     }
+    if (!file) {
+        cout << "Geef de input string" << endl;
+    }
+    getline(cin, input);
+    Parser* P1 = new Parser(input, file);
+    while (input != "n") {
+        Reduction* R1 = new Reduction();
+        if (R1->tokenizer(input)) {
+            Node* root = R1->AST();
+            R1->ASTtraversal(root);
+            cout << endl;
+            R1->fullReduction(root);
+        }
+        if (!file) {
+            cout << "Geef nieuwe input (of n voor stoppen)" << endl;
+        }
+        getline(cin, input);
+        delete R1;
+    }
+    delete P1;
     return 0;
 }//main

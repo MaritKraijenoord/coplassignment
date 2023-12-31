@@ -17,7 +17,6 @@ Parser::Parser (string input, bool file) {
     resultaat = "";
     for (size_t i = 0; i < input.size(); i++) {
         if (input[i] == '\\') {
-    std::cout << "help" << endl;
             variabele = "\\";
             tokens.push_back(make_pair(lambda, variabele));
         } else if (input[i] == '(') {
@@ -115,7 +114,7 @@ void Parser::lexpr () {
 
 // pexpr functie
 void Parser::pexpr () {
-    if (tokens[index].second == "(" && tokens[index-1].second != ")") {
+    if (tokens[index].second == "(" && index+1 < tokens.size() && tokens[index+1].second != ")") {
         resultaat = resultaat + tokens[index].second;
         index++;
         if (tokens[index].first == Tokenizer::space) {
@@ -134,7 +133,8 @@ void Parser::pexpr () {
             cerr << "Syntax error: missing closing parenthesis" << endl;
             exit(1);
         }
-    } else if (tokens[index].second == "(" && tokens[index-1].second == ")" ) {
+    } else if (tokens[index].second == "(" && index+1 < tokens.size() && tokens[index+1].second == ")" ) {
+        cout << "tot nu: " << resultaat << endl;
         cerr << "Syntax error: missing variable" << endl;
         exit(1);
     } else if (tokens[index].first == Tokenizer::var) {

@@ -11,7 +11,7 @@ enum Tokenizer {
 };
 
 // constructor parser
-Parser::Parser (string& input, bool file) {
+Parser::Parser (string input, bool file) {
     string variabele = "";
     string opnieuwParsen;
     resultaat = "";
@@ -53,20 +53,18 @@ Parser::Parser (string& input, bool file) {
     }
     index = 0;
     expr();
-    cout << resultaat << endl;
-    input = resultaat;
+    std::cout << resultaat << std::endl;
     if (!file) {
-        cout << "Wil u het resultaat opnieuw parsen? (j/n)" << endl;
-        //cin >> opnieuwParsen;
-        opnieuwParsen = "n";
+        std::cout << "Wil u het resultaat opnieuw parsen? (j/n)" << std::endl;
+        getline(cin, opnieuwParsen);
         if (opnieuwParsen == "J" || opnieuwParsen == "j") {
-            Parser* P2 = new Parser(input, file);
+            Parser* P2 = new Parser(resultaat, file);
             delete P2;
         } else {
-            cout << "Er wordt niet opnieuw geparsed." << endl;
+            std::cout << "Er wordt niet opnieuw geparsed." << std::endl;
         }
     }
-} // constructor
+}
 
 // expr functie
 void Parser::expr () {
@@ -116,7 +114,7 @@ void Parser::lexpr () {
 
 // pexpr functie
 void Parser::pexpr () {
-    if (tokens[index].second == "(" && tokens[index-1].second != ")") {
+    if (tokens[index].second == "(" && index+1 < tokens.size() && tokens[index+1].second != ")") {
         resultaat = resultaat + tokens[index].second;
         index++;
         if (tokens[index].first == Tokenizer::space) {
@@ -135,7 +133,7 @@ void Parser::pexpr () {
             cerr << "Syntax error: missing closing parenthesis" << endl;
             exit(1);
         }
-    } else if (tokens[index].second == "(" && tokens[index-1].second == ")" ) {
+    } else if (tokens[index].second == "(" && index+1 < tokens.size() && tokens[index+1].second == ")" ) {
         cerr << "Syntax error: missing variable" << endl;
         exit(1);
     } else if (tokens[index].first == Tokenizer::var) {

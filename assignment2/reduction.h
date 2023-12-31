@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <stack>
+#include <unordered_set>
 using namespace std;
 
 struct Token {
@@ -41,8 +42,8 @@ class Reduction {
         string input; // input
         int index;
         vector<Token> tokens;
-        vector<Node*> usedVar;
-        vector<Node*> freeVar;
+        bool diff;
+        int counter;
 
     public:
         Reduction(); // constructor
@@ -55,17 +56,19 @@ class Reduction {
 
         void ASTtraversal(Node* root); // doorloopt abstract syntax tree (in-order traversal)
 
+        Node* copyTree(Node* node); // kopieert een boom vanaf meegegeven node
+
+        void deleteTree(Node* &node); // verwijdert een boom vanaf meegegeven node
+
         Node* fullReduction(Node* root); // start het reduction-proces
     
     private:
 
         Node* alphaBetaRed(Node* root); // help-functie voor uitvoeren alpha conversion en beta reduction
 
-        void alphaConvVar(Node* root, bool lambdaParent); // voert alpha conversion uit
+        void alphaConv(Node* root, unordered_set<string>& vars, bool lambda); // voert alpha conversion uit
 
-        void alphaConvApp(Node* root, bool app); // checkt vrije variabelen
-
-        Node* betaRed(Node* root, string var, Node* replacement); // voert beta reduction uit
+        Node* betaRed(Node* root); // voert beta reduction uit
     
 };
 

@@ -6,12 +6,14 @@
 #include <vector>
 #include <string>
 #include <stack>
+#include <unordered_set>
 #include "reduction.h"
 using namespace std;
 
 // constructor
 Reduction::Reduction() {
     index = 0;
+    counter = 0;
 } // constructor
 
 // destructor
@@ -28,6 +30,11 @@ bool Reduction::tokenizer (string input) {
             t.type = Token::lambda;
             tokens.push_back(t);
         } else if (input[i] == '(') {
+            if (input[i-1] == ')') {
+                t.var = " ";
+                t.type = Token::space;
+                tokens.push_back(t);
+            }
             t.var = "(";
             t.type = Token::openb;
             tokens.push_back(t);
@@ -40,7 +47,7 @@ bool Reduction::tokenizer (string input) {
                     (input[i] >= 97 && input[i] <= 122)) {
             if (input[i] >= 48 && input[i] <= 57 && 
                 (input[i-1] == ' ' || input[i-1] == ')' ||input[i-1] == '(')) {
-                cout << "Syntax error: variabele mag niet met getal beginnen" << endl;
+                cerr << "Syntax error: variabele mag niet met getal beginnen" << endl;
                 exit(1);
             } else {
                 t.var = input[i];
@@ -59,7 +66,7 @@ bool Reduction::tokenizer (string input) {
             t.type = Token::space;
             tokens.push_back(t);
         } else {
-            cout << "Syntax error: karakter niet herkend" << endl;
+            cerr << "Syntax error: karakter niet herkend" << endl;
             exit(1);
         }
     }
@@ -82,7 +89,7 @@ Node* Reduction::AST () {
         } else if (newNode->type == 3) { // closed bracket )
             while (!operatorStack.empty() && operatorStack.top()->type != 2) {
                 Node* operatorNode = new Node(operatorStack.top()->data, operatorStack.top()->type);
-                operatorStack.pop(); // pop )
+                operatorStack.pop(); 
                 operatorNode->right = nodeStack.top();
                 nodeStack.pop();
                 if (operatorNode->type != 1) {
@@ -98,7 +105,7 @@ Node* Reduction::AST () {
     }
     while (!operatorStack.empty()) {
         Node* operatorNode = new Node(operatorStack.top()->data, operatorStack.top()->type);
-        operatorStack.pop(); // pop )
+        operatorStack.pop(); // pop
         operatorNode->right = nodeStack.top();
         nodeStack.pop();
         if (operatorNode->type != 1) {
@@ -116,10 +123,38 @@ Node* Reduction::AST () {
 void Reduction::ASTtraversal(Node* root) {
     if (root) {
         ASTtraversal(root->left);
-        cout << root->data << " ";
+        if (root->data == " ") {
+            cout << "@ "; // voor leesbaarheid AST (application)
+        } else {
+            cout << root->data << " ";
+        }
         ASTtraversal(root->right);
     }
 } // ASTtraversal
+
+// kopieert een boom vanaf de meegegeven node
+Node* Reduction::copyTree(Node* node) {
+    if (node == nullptr) {
+        return nullptr;
+    }
+    Node* newNode = new Node(node->data, node->type);
+    newNode->left = copyTree(node->left);
+    if (node->type != 1) {
+        newNode->right = copyTree(node->right);
+    }
+    return newNode;
+} // copyTree
+
+void Reduction::deleteTree(Node* &node) {
+    if (node != nullptr) {
+        // verwijder linker- en rechtersubbomen
+        deleteTree(node->left);
+        deleteTree(node->right);
+        // verwijder huidige node
+        delete node;
+        node = nullptr; // zet als nullptr na delete
+    }
+} // verwijderBoomDot
 
 // start het reduction-proces
 Node* Reduction::fullReduction(Node* root) {
@@ -133,102 +168,92 @@ Node* Reduction::alphaBetaRed(Node* root) {
         return nullptr;
     }
     // alpha conversion
-    alphaConvVar(root, false);
-    alphaConvApp(root, false);
-    cout << "Gevonden variabelen (captured): ";
-    for (size_t i = 0; i < usedVar.size(); i++) {
-        cout << usedVar[i]->data << " ";
-    }
+    unordered_set<string> vars;
+    alphaConv(root, vars, false);
+    // }
     cout << endl;
-    cout << "Gevonden variabelen (free): ";
-    for (size_t i = 0; i < freeVar.size(); i++) {
-        cout << freeVar[i]->data << " ";
-    }
+    cout << "After alpha conversion: " << endl;
+    ASTtraversal(root);
     cout << endl;
-    int N = 97;
-    string change = "A";
-    for (size_t i = 0; i < freeVar.size(); i++) {
-        for (size_t j = 0; j < usedVar.size(); j++) {
-            if (freeVar[i]->data == usedVar[j]->data) {
-                freeVar[i]->data = change + char(N);
-                N++;
-                if (N > 122) {
-                    N = 97;
-                    change = change + char(N);
-                }
-            }
-        }
-    }
     int count = 0;
-    Node* prevRoot = nullptr;
-    while (root != prevRoot) {
-        prevRoot = root;
+    diff = true;
+    cout << "After beta reduction: " << endl;
+    while (diff) {
+        diff = false;
         // beta reduction
-        if (root->type == 4) {
-            for (size_t i = 0; i < usedVar.size(); i++) {
-                root = betaRed(root, usedVar[i]->data, freeVar[i]);
-            }
-        }
+        root = betaRed(root);
         count++;
         // controle niet oneindig reduction blijven proberen
-        if (count > 10) {
+        if (count > 100) {
+            cerr << "Oneindige bèta reductie" << endl;
             exit(2);
         }
     }
-    if (prevRoot != nullptr) {
-        delete prevRoot;
-    }    
+    ASTtraversal(root);
+    cout << endl;
     return root;
 } // alphaBetaRed
 
 // voert alpha conversion uit
-void Reduction::alphaConvVar(Node* root, bool lambdaParent) {
+void Reduction::alphaConv(Node* root, unordered_set<string>& vars, bool lambda) {
     if (root == nullptr) {
         return;
     }
     if (root->type == 1) { // lambda
-        lambdaParent = true;
-        alphaConvVar(root->left, lambdaParent);
-        alphaConvVar(root->right, lambdaParent);
-        lambdaParent = false;
-    } else if (root->type == 0 && lambdaParent) { // variable
-        usedVar.push_back(root);
+        if (root->right != nullptr) {
+            alphaConv(root->right ,vars, true);
+        }
+    } else if (root->type == 0) {
+        if (!lambda && vars.count(root->data) > 0) {
+            // conflict, rename
+            string rename = "a" + to_string(counter++);
+            root->data = rename;
+            vars.insert(rename);
+        }
+        vars.insert(root->data);
+    } else if (root->type == 4) {
+        if (lambda) {
+            if (root->left != nullptr) {
+                alphaConv(root->left, vars, true);
+            }
+            if (root->right != nullptr) {
+                alphaConv(root->right, vars, false);
+            }
+        } else {
+            if (root->left != nullptr) {
+                alphaConv(root->left, vars, false);
+            }
+            if (root->right != nullptr) {
+                alphaConv(root->right, vars, false);
+            }
+        }
     } else {
-        alphaConvVar(root->left, lambdaParent);
-        alphaConvVar(root->right, lambdaParent);
+        cerr << "Syntax error: karakter niet herkend" << endl;
+        exit(1);
     }
-} // alphaConvVar
-
-// checkt vrije variabelen
-void Reduction::alphaConvApp (Node* root, bool app) {
-    if (root == nullptr) {
-        return;
-    }
-    if (root->type == 4) { // space
-        app = true;
-        alphaConvApp(root->left, app);
-        alphaConvApp(root->right, app);
-        app = false;
-    } else if (root->type == 1) { // lambda (captured variables)
-        return;
-    } else if (root->type == 0 && app) { // variable
-        freeVar.push_back(root);
-    } else {
-        alphaConvApp(root->left, app);
-        alphaConvApp(root->right, app);
-    }
-} // alphaConvApp
+    
+} // alphaConv
 
 // voert beta reduction uit
-Node* Reduction::betaRed(Node* root, string var, Node* replacement) {
+Node* Reduction::betaRed(Node* root) {
     if (root == nullptr) {
         return nullptr;
     }
-    if (root->type == 1 && root->data == var) {
-        delete root;
-        return replacement;
+    if (root->type == 4) { // application
+        if (root->left != nullptr && root->left->type == 1 && root->right != nullptr) {
+            if (root->left->right != nullptr && root->left->right->left != nullptr) {
+                Node* newnode = copyTree(root->right);
+                deleteTree(root->left->right->left);
+                root->left->right->left = copyTree(newnode);
+                deleteTree(newnode);
+            }
+        }
     }
-    root->left = betaRed(root->left, var, replacement);
-    root->right = betaRed(root->right, var, replacement);
+    if (root->left != nullptr) {
+        root->left = betaRed(root->left);
+    }
+    if (root->right != nullptr) {
+        root->right = betaRed(root->right);
+    } 
     return root;
 } // betaRed
